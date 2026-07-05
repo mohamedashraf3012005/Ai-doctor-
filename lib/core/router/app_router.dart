@@ -7,6 +7,7 @@ import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/booking/presentation/pages/booking_page.dart';
 import '../../features/chat/presentation/pages/chat_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/dashboard/presentation/pages/doctor_dashboard_page.dart';
 import '../../features/diagnosis/presentation/pages/diagnosis_page.dart';
 import '../../features/doctors/domain/entities/doctor_entity.dart';
 import '../../features/doctors/presentation/pages/doctors_page.dart';
@@ -66,6 +67,13 @@ class AppRouter {
             name: 'dashboard',
             pageBuilder: (context, state) => const NoTransitionPage(
               child: DashboardPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/doctor-dashboard',
+            name: 'doctor-dashboard',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: DoctorDashboardPage(),
             ),
           ),
         ],

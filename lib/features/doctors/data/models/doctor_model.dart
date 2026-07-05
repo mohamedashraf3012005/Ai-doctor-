@@ -32,52 +32,67 @@ class DoctorModel {
 
   factory DoctorModel.fromJson(Map<String, dynamic> json) {
     return DoctorModel(
-      id: (json['id'] ?? json['_id'] ?? '').toString(),
-      fullName: json['fullName'] ?? json['name'] ?? '',
-      email: json['email'] ?? '',
-      phone: json['phone'] ?? json['phoneNumber'] ?? '',
+      id: (json['id'] ?? json['_id'] ?? json['doctorId'] ?? '').toString(),
+      fullName: json['fullName'] ?? json['name'] ?? json['doctorName'] ?? '',
+      email: json['email'] ?? json['emailAddress'] ?? '',
+      phone: json['phone'] ?? json['phoneNumber'] ?? json['mobile'] ?? '',
       gender: json['gender'] ?? 'Male',
-      specialization: json['specialization'] ?? json['specialty'] ?? '',
+      specialization:
+          json['specialization'] ??
+          json['specialty'] ??
+          json['department'] ??
+          '',
       experienceYears: json['experienceYears'] is int
           ? json['experienceYears']
-          : int.tryParse('${json['experienceYears'] ?? ''}') ?? 0,
-      clinicAddress: json['clinicAddress'] ?? json['address'] ?? '',
-      profileImageUrl: json['profileImageUrl'] ?? json['imageUrl'],
-      isApproved: json['isApproved'] ?? json['approved'] ?? true,
-      rating: (json['rating'] ?? 4.8) is int
-          ? (json['rating'] as int).toDouble()
-          : (json['rating'] as double? ?? 4.8),
-      reviewsCount: json['reviewsCount'] ?? json['reviewCount'] ?? 12,
+          : int.tryParse(
+                  '${json['experienceYears'] ?? json['yearsOfExperience'] ?? ''}',
+                ) ??
+                0,
+      clinicAddress:
+          json['clinicAddress'] ?? json['address'] ?? json['clinic'] ?? '',
+      profileImageUrl:
+          json['profileImageUrl'] ?? json['imageUrl'] ?? json['avatarUrl'],
+      isApproved:
+          json['isApproved'] ?? json['approved'] ?? json['isVerified'] ?? true,
+      rating: (json['rating'] ?? json['averageRating'] ?? 4.8) is int
+          ? (json['rating'] ?? json['averageRating'] as int).toDouble()
+          : ((json['rating'] ?? json['averageRating']) as num?)?.toDouble() ??
+                4.8,
+      reviewsCount:
+          json['reviewsCount'] ??
+          json['reviewCount'] ??
+          json['totalReviews'] ??
+          12,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'fullName': fullName,
-        'email': email,
-        'phone': phone,
-        'gender': gender,
-        'specialization': specialization,
-        'experienceYears': experienceYears,
-        'clinicAddress': clinicAddress,
-        'profileImageUrl': profileImageUrl,
-        'isApproved': isApproved,
-        'rating': rating,
-        'reviewsCount': reviewsCount,
-      };
+    'id': id,
+    'fullName': fullName,
+    'email': email,
+    'phone': phone,
+    'gender': gender,
+    'specialization': specialization,
+    'experienceYears': experienceYears,
+    'clinicAddress': clinicAddress,
+    'profileImageUrl': profileImageUrl,
+    'isApproved': isApproved,
+    'rating': rating,
+    'reviewsCount': reviewsCount,
+  };
 
   DoctorEntity toEntity() => DoctorEntity(
-        id: id,
-        fullName: fullName,
-        email: email,
-        phone: phone,
-        gender: gender,
-        specialization: specialization,
-        experienceYears: experienceYears,
-        clinicAddress: clinicAddress,
-        profileImageUrl: profileImageUrl,
-        isApproved: isApproved,
-        rating: rating,
-        reviewsCount: reviewsCount,
-      );
+    id: id,
+    fullName: fullName,
+    email: email,
+    phone: phone,
+    gender: gender,
+    specialization: specialization,
+    experienceYears: experienceYears,
+    clinicAddress: clinicAddress,
+    profileImageUrl: profileImageUrl,
+    isApproved: isApproved,
+    rating: rating,
+    reviewsCount: reviewsCount,
+  );
 }

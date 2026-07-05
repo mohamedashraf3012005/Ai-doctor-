@@ -73,6 +73,7 @@ Future<void> init() async {
         registerPatientUseCase: sl(),
         registerDoctorUseCase: sl(),
         authRepository: sl(),
+        storage: sl(),
       ));
 
   // ─── Doctors Feature ──────────────────────────────────────

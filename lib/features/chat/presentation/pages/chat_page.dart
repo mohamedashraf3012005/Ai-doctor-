@@ -64,7 +64,12 @@ class _ChatPageState extends State<ChatPage> {
     final chatCubit = context.read<ChatCubit>();
     final found = chatCubit.contacts.firstWhere(
       (c) => c.id == docId,
-      orElse: () => ChatContactEntity(id: docId, name: 'Doctor', type: 'doctor', online: false),
+      orElse: () => ChatContactEntity(
+        id: docId,
+        name: 'Doctor',
+        type: 'doctor',
+        online: false,
+      ),
     );
     _onContactSelected(found);
   }
@@ -83,9 +88,9 @@ class _ChatPageState extends State<ChatPage> {
     if (text.isEmpty || _selectedContact == null) return;
 
     context.read<ChatCubit>().sendMessage(
-          receiverId: _selectedContact!.id,
-          content: text,
-        );
+      receiverId: _selectedContact!.id,
+      content: text,
+    );
     _messageController.clear();
     _scrollToBottom();
   }
@@ -120,8 +125,11 @@ class _ChatPageState extends State<ChatPage> {
                     Icon(Icons.stars, color: AppColors.primary, size: 24),
                     const SizedBox(width: 8),
                     Text(
-                      context.isArabic ? 'ملخص ذكي بالذكاء الاصطناعي' : 'AI Intelligent Summary',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      context.translate('aiIntelligentSummary'),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -132,7 +140,11 @@ class _ChatPageState extends State<ChatPage> {
                     child: MarkdownBody(
                       data: summary,
                       styleSheet: MarkdownStyleSheet(
-                        p: TextStyle(color: isDark ? Colors.white70 : AppColors.textPrimary),
+                        p: TextStyle(
+                          color: isDark
+                              ? Colors.white70
+                              : AppColors.textPrimary,
+                        ),
                       ),
                     ),
                   ),
@@ -191,7 +203,7 @@ class _ChatPageState extends State<ChatPage> {
     final chatBoxWidget = _selectedContact == null
         ? Center(
             child: Text(
-              context.isArabic ? 'اختر محادثة لبدء الدردشة' : 'Select a conversation to start chatting',
+              context.translate('selectConversationToStart'),
               style: const TextStyle(color: AppColors.textSecondary),
             ),
           )
@@ -199,12 +211,17 @@ class _ChatPageState extends State<ChatPage> {
             children: [
               // Chat Header
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: isDark ? const Color(0xFF05281D) : Colors.white,
                   border: Border(
                     bottom: BorderSide(
-                      color: isDark ? const Color(0xFF093D2C) : AppColors.border,
+                      color: isDark
+                          ? const Color(0xFF093D2C)
+                          : AppColors.border,
                     ),
                   ),
                 ),
@@ -231,7 +248,9 @@ class _ChatPageState extends State<ChatPage> {
                         child: Text(
                           _selectedContact!.type == 'bot'
                               ? '🤖'
-                              : (_selectedContact!.type == 'doctor' ? '👨‍⚕️' : '👤'),
+                              : (_selectedContact!.type == 'doctor'
+                                    ? '👨‍⚕️'
+                                    : '👤'),
                           style: const TextStyle(fontSize: 18),
                         ),
                       ),
@@ -243,17 +262,26 @@ class _ChatPageState extends State<ChatPage> {
                         children: [
                           Text(
                             _selectedContact!.name,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 2),
                           Text(
                             _selectedContact!.online
-                                ? (context.isArabic ? 'متصل' : 'Online')
-                                : (context.isArabic ? 'غير متصل' : 'Offline'),
+                                ? (context.isArabic
+                                      ? 'متصل'
+                                      : context.translate('online'))
+                                : (context.isArabic
+                                      ? 'غير متصل'
+                                      : context.translate('offline')),
                             style: TextStyle(
-                              color: _selectedContact!.online ? AppColors.success : Colors.grey,
+                              color: _selectedContact!.online
+                                  ? AppColors.success
+                                  : Colors.grey,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
@@ -272,11 +300,13 @@ class _ChatPageState extends State<ChatPage> {
                         builder: (context, state) {
                           return TextButton.icon(
                             onPressed: () {
-                              context.read<ChatCubit>().summarizeChat(_selectedContact!.id);
+                              context.read<ChatCubit>().summarizeChat(
+                                _selectedContact!.id,
+                              );
                             },
                             icon: const Icon(Icons.stars, size: 16),
                             label: Text(
-                              context.isArabic ? 'ملخص الذكاء الاصطناعي' : 'AI Summary',
+                              context.translate('aiSummary'),
                               style: const TextStyle(fontSize: 12),
                             ),
                             style: TextButton.styleFrom(
@@ -291,7 +321,9 @@ class _ChatPageState extends State<ChatPage> {
               // Message Logs
               Expanded(
                 child: Container(
-                  color: isDark ? const Color(0xFF02140F) : const Color(0xFFF4FDF9),
+                  color: isDark
+                      ? const Color(0xFF02140F)
+                      : const Color(0xFFF4FDF9),
                   child: BlocBuilder<ChatCubit, ChatState>(
                     builder: (context, state) {
                       final msgs = context.read<ChatCubit>().messages;
@@ -301,8 +333,12 @@ class _ChatPageState extends State<ChatPage> {
 
                       return ListView.builder(
                         controller: _scrollController,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        itemCount: msgs.length + (state is AiMessageStreaming ? 1 : 0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
+                        itemCount:
+                            msgs.length + (state is AiMessageStreaming ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index < msgs.length) {
                             final m = msgs[index];
@@ -312,12 +348,15 @@ class _ChatPageState extends State<ChatPage> {
                             );
                           } else {
                             // Render partial streaming AI response
-                            final streamingText = (state as AiMessageStreaming).partialReply;
+                            final streamingText =
+                                (state as AiMessageStreaming).partialReply;
                             return MessageBubble(
                               message: ChatMessageEntity(
                                 id: 'streaming',
                                 senderId: 'bot',
-                                content: streamingText.isEmpty ? 'Typing...' : streamingText,
+                                content: streamingText.isEmpty
+                                    ? context.translate('typing')
+                                    : streamingText,
                                 timestamp: DateTime.now(),
                                 isSentByMe: false,
                               ),
@@ -337,7 +376,9 @@ class _ChatPageState extends State<ChatPage> {
                   color: isDark ? const Color(0xFF05281D) : Colors.white,
                   border: Border(
                     top: BorderSide(
-                      color: isDark ? const Color(0xFF093D2C) : AppColors.border,
+                      color: isDark
+                          ? const Color(0xFF093D2C)
+                          : AppColors.border,
                     ),
                   ),
                 ),
@@ -349,13 +390,15 @@ class _ChatPageState extends State<ChatPage> {
                         height: 36,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: (context.isArabic
-                              ? [
-                                  'كيف يمكنني رفع أشعة سينية؟',
-                                  'كيف يمكنني حجز موعد؟',
-                                  'ما هي الأمراض التي يتم تشخيصها؟',
-                                ]
-                              : _quickActions).length,
+                          itemCount:
+                              (context.isArabic
+                                      ? [
+                                          'كيف يمكنني رفع أشعة سينية؟',
+                                          'كيف يمكنني حجز موعد؟',
+                                          'ما هي الأمراض التي يتم تشخيصها؟',
+                                        ]
+                                      : _quickActions)
+                                  .length,
                           itemBuilder: (context, index) {
                             final action = (context.isArabic
                                 ? [
@@ -369,14 +412,23 @@ class _ChatPageState extends State<ChatPage> {
                               child: ActionChip(
                                 label: Text(
                                   action,
-                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 onPressed: () {
                                   _messageController.text = action;
                                   _sendMessage();
                                 },
-                                backgroundColor: isDark ? const Color(0xFF093D2C) : Colors.white,
-                                side: BorderSide(color: AppColors.primary.withValues(alpha: 0.3)),
+                                backgroundColor: isDark
+                                    ? const Color(0xFF093D2C)
+                                    : Colors.white,
+                                side: BorderSide(
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                ),
                               ),
                             );
                           },
@@ -392,8 +444,13 @@ class _ChatPageState extends State<ChatPage> {
                             decoration: InputDecoration(
                               hintText: context.translate('typeMessage'),
                               filled: true,
-                              fillColor: isDark ? const Color(0xFF093D2C) : const Color(0xFFEBFDF5),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              fillColor: isDark
+                                  ? const Color(0xFF093D2C)
+                                  : const Color(0xFFEBFDF5),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: AppRadius.pill,
                                 borderSide: BorderSide.none,
@@ -412,7 +469,11 @@ class _ChatPageState extends State<ChatPage> {
                               color: AppColors.primary,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.send, color: Colors.white, size: 18),
+                            child: const Icon(
+                              Icons.send,
+                              color: Colors.white,
+                              size: 18,
+                            ),
                           ),
                         ),
                       ],
@@ -435,7 +496,9 @@ class _ChatPageState extends State<ChatPage> {
                     decoration: BoxDecoration(
                       border: Border(
                         right: BorderSide(
-                          color: isDark ? const Color(0xFF093D2C) : AppColors.border,
+                          color: isDark
+                              ? const Color(0xFF093D2C)
+                              : AppColors.border,
                         ),
                       ),
                     ),
@@ -446,7 +509,10 @@ class _ChatPageState extends State<ChatPage> {
                           padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                           child: Text(
                             context.translate('contacts'),
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         const Divider(),
@@ -456,10 +522,7 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
                 // Chat Area
-                Expanded(
-                  flex: 5,
-                  child: chatBoxWidget,
-                ),
+                Expanded(flex: 5, child: chatBoxWidget),
               ],
             ),
     );

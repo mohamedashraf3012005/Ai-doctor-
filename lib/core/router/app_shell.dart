@@ -49,10 +49,10 @@ class AppShell extends StatelessWidget {
       context.go(path);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please sign in to access this section'),
+        SnackBar(
+          content: Text(context.translate('signInToAccessSection')),
           backgroundColor: AppColors.primary,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
       context.push('/login');

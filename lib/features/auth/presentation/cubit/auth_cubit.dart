@@ -1,4 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../core/storage/secure_storage_service.dart';
+import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/use_cases/login_use_case.dart';
 import '../../domain/use_cases/register_use_case.dart';
@@ -10,26 +13,48 @@ class AuthCubit extends Cubit<AuthState> {
   final RegisterPatientUseCase _registerPatientUseCase;
   final RegisterDoctorUseCase _registerDoctorUseCase;
   final AuthRepository _authRepository;
+  final SecureStorageService _storage;
 
   AuthCubit({
     required LoginUseCase loginUseCase,
     required RegisterPatientUseCase registerPatientUseCase,
     required RegisterDoctorUseCase registerDoctorUseCase,
     required AuthRepository authRepository,
+    required SecureStorageService storage,
   })  : _loginUseCase = loginUseCase,
         _registerPatientUseCase = registerPatientUseCase,
         _registerDoctorUseCase = registerDoctorUseCase,
         _authRepository = authRepository,
+        _storage = storage,
         super(const AuthInitial());
 
   /// Check if user is already logged in.
+  /// Restores the role from secure storage so it always matches what the user chose.
   Future<void> checkAuthStatus() async {
     final loggedIn = await _authRepository.isLoggedIn();
     if (loggedIn) {
+      // Read the persisted role BEFORE fetching the profile.
+      final storedRole = await _storage.getRole();
       final result = await _authRepository.getProfile();
       result.fold(
         (failure) => emit(const AuthUnauthenticated()),
-        (user) => emit(AuthAuthenticated(user: user, token: '')),
+        (user) {
+          // Override role with the one we stored at login/register time.
+          final corrected = UserEntity(
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: storedRole?.toLowerCase() ?? user.role,
+            phone: user.phone,
+            age: user.age,
+            gender: user.gender,
+            specialization: user.specialization,
+            experienceYears: user.experienceYears,
+            clinicAddress: user.clinicAddress,
+            profileImageUrl: user.profileImageUrl,
+          );
+          emit(AuthAuthenticated(user: corrected, token: ''));
+        },
       );
     } else {
       emit(const AuthUnauthenticated());
@@ -50,7 +75,23 @@ class AuthCubit extends Cubit<AuthState> {
     );
     result.fold(
       (failure) => emit(AuthError(failure.message)),
-      (data) => emit(AuthAuthenticated(user: data.user, token: data.token)),
+      (data) {
+        // Ensure role matches the selected role to avoid misclassification
+        final correctedUser = UserEntity(
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: role,
+          phone: data.user.phone,
+          age: data.user.age,
+          gender: data.user.gender,
+          specialization: data.user.specialization,
+          experienceYears: data.user.experienceYears,
+          clinicAddress: data.user.clinicAddress,
+          profileImageUrl: data.user.profileImageUrl,
+        );
+        emit(AuthAuthenticated(user: correctedUser, token: data.token));
+      },
     );
   }
 
@@ -74,7 +115,23 @@ class AuthCubit extends Cubit<AuthState> {
     );
     result.fold(
       (failure) => emit(AuthError(failure.message)),
-      (data) => emit(AuthAuthenticated(user: data.user, token: data.token)),
+      (data) {
+        // Always force role to 'patient' regardless of what backend returns.
+        final corrected = UserEntity(
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: 'patient',
+          phone: data.user.phone,
+          age: data.user.age,
+          gender: data.user.gender,
+          specialization: data.user.specialization,
+          experienceYears: data.user.experienceYears,
+          clinicAddress: data.user.clinicAddress,
+          profileImageUrl: data.user.profileImageUrl,
+        );
+        emit(AuthAuthenticated(user: corrected, token: data.token));
+      },
     );
   }
 
@@ -104,7 +161,23 @@ class AuthCubit extends Cubit<AuthState> {
     );
     result.fold(
       (failure) => emit(AuthError(failure.message)),
-      (data) => emit(AuthAuthenticated(user: data.user, token: data.token)),
+      (data) {
+        // Always force role to 'doctor' regardless of what backend returns.
+        final corrected = UserEntity(
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: 'doctor',
+          phone: data.user.phone,
+          age: data.user.age,
+          gender: data.user.gender,
+          specialization: data.user.specialization,
+          experienceYears: data.user.experienceYears,
+          clinicAddress: data.user.clinicAddress,
+          profileImageUrl: data.user.profileImageUrl,
+        );
+        emit(AuthAuthenticated(user: corrected, token: data.token));
+      },
     );
   }
 

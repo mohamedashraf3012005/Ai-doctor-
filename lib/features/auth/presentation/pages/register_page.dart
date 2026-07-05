@@ -76,8 +76,8 @@ class _RegisterPageState extends State<RegisterPage> {
       } else {
         if (_idCardPath == null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please upload your National ID Card'),
+            SnackBar(
+              content: Text(context.translate('pleaseUploadId')),
               backgroundColor: AppColors.danger,
             ),
           );
@@ -175,7 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
             label: context.translate('fullName'),
             hint: 'John Doe',
             prefixIcon: Icons.person_outline,
-            validator: (v) => Validators.required(v, context.translate('fullName')),
+            validator: Validators.requiredValidator(context, context.translate('fullName')),
           ),
           const SizedBox(height: 16),
           AppTextField(
@@ -184,7 +184,7 @@ class _RegisterPageState extends State<RegisterPage> {
             hint: 'name@example.com',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.email,
+            validator: Validators.emailValidator(context),
           ),
           const SizedBox(height: 16),
           Row(
@@ -197,7 +197,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   hint: '+12345678',
                   prefixIcon: Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
-                  validator: Validators.phone,
+                  validator: Validators.phoneValidator(context),
                 ),
               ),
               const SizedBox(width: 12),
@@ -208,7 +208,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   hint: '••••••••',
                   obscureText: true,
                   prefixIcon: Icons.lock_outline,
-                  validator: Validators.password,
+                  validator: Validators.passwordValidator(context),
                 ),
               ),
             ],
@@ -226,7 +226,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     label: context.translate('age'),
                     hint: '25',
                     keyboardType: TextInputType.number,
-                    validator: (v) => Validators.required(v, context.translate('age')),
+                    validator: Validators.requiredValidator(context, context.translate('age')),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -321,7 +321,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     label: context.translate('yearsExp'),
                     hint: '5',
                     keyboardType: TextInputType.number,
-                    validator: (v) => Validators.required(v, context.translate('yearsExp')),
+                    validator: Validators.requiredValidator(context, context.translate('yearsExp')),
                   ),
                 ),
               ],
@@ -375,7 +375,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _clinicController,
                     label: context.translate('clinicAddress'),
                     hint: 'City Street 12',
-                    validator: (v) => Validators.required(v, context.translate('clinicAddress')),
+                    validator: Validators.requiredValidator(context, context.translate('clinicAddress')),
                   ),
                 ),
               ],
@@ -384,9 +384,9 @@ class _RegisterPageState extends State<RegisterPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'National ID Card',
-                  style: TextStyle(
+                Text(
+                  context.translate('nationalIdCard'),
+                  style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textSecondary,
@@ -411,7 +411,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            _idCardName ?? 'Upload National ID (PDF/Image)',
+                            _idCardName ?? context.translate('uploadNationalId'),
                             style: TextStyle(
                               color: _idCardName != null
                                   ? (isDark ? Colors.white : AppColors.textPrimary)
@@ -436,11 +436,18 @@ class _RegisterPageState extends State<RegisterPage> {
               if (state is AuthAuthenticated) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Welcome, ${state.user.name}!'),
+                    content: Text('${context.translate('welcomeUser')}, ${state.user.name}!'),
                     backgroundColor: AppColors.success,
                   ),
                 );
-                context.go('/dashboard');
+                // Navigate based on role
+                if (state.user.role == 'doctor') {
+                  context.go('/doctor-dashboard');
+                } else if (state.user.role == 'admin') {
+                  context.go('/admin-dashboard');
+                } else {
+                  context.go('/dashboard');
+                }
               } else if (state is AuthError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

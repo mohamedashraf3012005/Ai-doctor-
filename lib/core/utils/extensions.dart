@@ -19,12 +19,12 @@ extension ContextExtension on BuildContext {
 
   /// Translates a key based on current active language.
   String translate(String key) {
-    final languageCode = watch<LocaleCubit>().state.languageCode;
+    final languageCode = read<LocaleCubit>().state.languageCode;
     return AppStrings.get(key, languageCode);
   }
 
   /// Check if active language direction is RTL / Arabic.
-  bool get isArabic => watch<LocaleCubit>().isArabic;
+  bool get isArabic => read<LocaleCubit>().isArabic;
 }
 
 /// String utility extensions.

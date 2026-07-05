@@ -113,7 +113,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               hint: 'name@example.com',
               prefixIcon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
-              validator: Validators.email,
+              validator: Validators.emailValidator(context),
             ),
             const SizedBox(height: 32),
             BlocConsumer<AuthCubit, AuthState>(
@@ -215,7 +215,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               hint: '000000',
               prefixIcon: Icons.lock_clock_outlined,
               keyboardType: TextInputType.number,
-              validator: (v) => Validators.required(v, context.translate('verificationCode')),
+              validator: Validators.requiredValidator(context, context.translate('verificationCode')),
             ),
             const SizedBox(height: 32),
             BlocConsumer<AuthCubit, AuthState>(
@@ -274,7 +274,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               hint: '••••••••',
               obscureText: true,
               prefixIcon: Icons.lock_outline,
-              validator: Validators.password,
+              validator: Validators.passwordValidator(context),
             ),
             const SizedBox(height: 20),
             AppTextField(
@@ -283,7 +283,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               hint: '••••••••',
               obscureText: true,
               prefixIcon: Icons.lock_outline,
-              validator: Validators.password,
+              validator: Validators.passwordValidator(context),
             ),
             const SizedBox(height: 32),
             BlocConsumer<AuthCubit, AuthState>(

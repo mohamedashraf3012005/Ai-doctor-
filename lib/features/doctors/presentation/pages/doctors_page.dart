@@ -37,9 +37,9 @@ class _DoctorsPageState extends State<DoctorsPage> {
 
   void _triggerSearch() {
     context.read<DoctorsCubit>().fetchDoctors(
-          searchQuery: _searchController.text.trim(),
-          specialty: _selectedSpecialty,
-        );
+      searchQuery: _searchController.text.trim(),
+      specialty: _selectedSpecialty,
+    );
   }
 
   @override
@@ -64,7 +64,9 @@ class _DoctorsPageState extends State<DoctorsPage> {
             ),
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: AppDimensions.maxWidth),
+                constraints: const BoxConstraints(
+                  maxWidth: AppDimensions.maxWidth,
+                ),
                 child: DoctorSearchBar(
                   controller: _searchController,
                   selectedSpecialty: _selectedSpecialty,
@@ -89,7 +91,9 @@ class _DoctorsPageState extends State<DoctorsPage> {
               ),
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: AppDimensions.maxWidth),
+                  constraints: const BoxConstraints(
+                    maxWidth: AppDimensions.maxWidth,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -98,7 +102,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
                           if (state is DoctorsLoaded) {
                             final text = context.isArabic
                                 ? 'تم العثور على ${state.doctors.length} طبيب'
-                                : '${state.doctors.length} specialists found';
+                                : '${state.doctors.length} ${context.translate('doctors')}';
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
                               child: Text(
@@ -127,7 +131,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
                             if (state.doctors.isEmpty) {
                               return EmptyStateWidget(
                                 icon: Icons.person_search_outlined,
-                                title: context.isArabic ? 'لم يتم العثور على أطباء' : 'No Doctors Found',
+                                title: context.translate('noData'),
                                 subtitle: context.isArabic
                                     ? 'حاول تعديل معايير البحث أو مرشح التخصص.'
                                     : 'Try adjusting your search criteria or specialty filters.',
@@ -137,12 +141,15 @@ class _DoctorsPageState extends State<DoctorsPage> {
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: state.doctors.length,
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: isDesktop ? 3 : (context.screenWidth > 600 ? 2 : 1),
-                                mainAxisSpacing: 20,
-                                crossAxisSpacing: 20,
-                                childAspectRatio: 0.78,
-                              ),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: isDesktop
+                                        ? 3
+                                        : (context.screenWidth > 600 ? 2 : 1),
+                                    mainAxisSpacing: 20,
+                                    crossAxisSpacing: 20,
+                                    childAspectRatio: 0.78,
+                                  ),
                               itemBuilder: (context, index) {
                                 final doc = state.doctors[index];
                                 return DoctorCard(doctor: doc);

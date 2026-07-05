@@ -34,7 +34,9 @@ class DoctorCard extends StatelessWidget {
               children: [
                 AspectRatio(
                   aspectRatio: 1.3,
-                  child: doctor.profileImageUrl != null
+                  child:
+                      doctor.profileImageUrl != null &&
+                          doctor.profileImageUrl!.isNotEmpty
                       ? CachedNetworkImage(
                           imageUrl: doctor.profileImageUrl!,
                           fit: BoxFit.cover,
@@ -44,7 +46,8 @@ class DoctorCard extends StatelessWidget {
                               child: CircularProgressIndicator(),
                             ),
                           ),
-                          errorWidget: (context, url, error) => _buildAvatarPlaceholder(isDark),
+                          errorWidget: (context, url, error) =>
+                              _buildAvatarPlaceholder(isDark),
                         )
                       : _buildAvatarPlaceholder(isDark),
                 ),
@@ -53,7 +56,10 @@ class DoctorCard extends StatelessWidget {
                   top: 12,
                   left: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.primary,
                       borderRadius: AppRadius.pill,
@@ -73,7 +79,10 @@ class DoctorCard extends StatelessWidget {
                   bottom: 12,
                   right: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.7),
                       borderRadius: AppRadius.pill,
@@ -117,7 +126,7 @@ class DoctorCard extends StatelessWidget {
                   Text(
                     context.isArabic
                         ? 'خبرة ${doctor.experienceYears} سنة'
-                        : '${doctor.experienceYears} Years Experience',
+                        : '${doctor.experienceYears} ${context.translate('yearsExp')}',
                     style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.textSecondary,
@@ -129,7 +138,11 @@ class DoctorCard extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.location_on_outlined, size: 16, color: AppColors.textSecondary),
+                      const Icon(
+                        Icons.location_on_outlined,
+                        size: 16,
+                        color: AppColors.textSecondary,
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
@@ -186,11 +199,7 @@ class DoctorCard extends StatelessWidget {
     return Container(
       color: isDark ? const Color(0xFF093D2C) : const Color(0xFFEBFDF5),
       child: const Center(
-        child: Icon(
-          Icons.person_pin,
-          size: 64,
-          color: AppColors.primary,
-        ),
+        child: Icon(Icons.person_pin, size: 64, color: AppColors.primary),
       ),
     );
   }

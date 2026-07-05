@@ -120,13 +120,13 @@ class _BookingPageState extends State<BookingPage> {
     final formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
 
     context.read<BookingCubit>().bookAppointment(
-          doctorId: _selectedDoctor!.id,
-          patientName: _nameController.text.trim(),
-          patientPhone: _phoneController.text.trim(),
-          appointmentDate: formattedDate,
-          timeSlot: _selectedSlot!,
-          medicalNotes: _notesController.text.trim(),
-        );
+      doctorId: _selectedDoctor!.id,
+      patientName: _nameController.text.trim(),
+      patientPhone: _phoneController.text.trim(),
+      appointmentDate: formattedDate,
+      timeSlot: _selectedSlot!,
+      medicalNotes: _notesController.text.trim(),
+    );
   }
 
   void _showSuccessDialog(AppointmentEntity appt) {
@@ -162,7 +162,10 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 12),
                 Text(
                   context.translate('appointmentConfirmedDesc'),
-                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 28),
@@ -182,7 +185,10 @@ class _BookingPageState extends State<BookingPage> {
                   },
                   child: Text(
                     context.translate('returnHome'),
-                    style: const TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -214,50 +220,87 @@ class _BookingPageState extends State<BookingPage> {
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF02140F) : AppColors.surface,
-      body: BlocConsumer<BookingCubit, BookingState>(
-        listener: (context, state) {
-          if (state is BookingSuccess) {
-            context.read<BookingCubit>().reset();
-            _showSuccessDialog(state.appointment);
-          } else if (state is BookingError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message), backgroundColor: AppColors.danger),
-            );
-          }
-        },
-        builder: (context, state) {
-          return SingleChildScrollView(
-            child: Column(
+      body: Column(
+        children: [
+          // Back button in header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
               children: [
-                PageHeader(
-                  badge: context.translate('appointmentBooking'),
-                  title: context.translate('scheduleConsultation'),
-                  subtitle: context.translate('bookingSubtitle'),
+                IconButton(
+                  icon: Icon(
+                    context.isArabic ? Icons.arrow_forward : Icons.arrow_back,
+                    color: AppColors.textPrimary,
+                  ),
+                  onPressed: () => context.pop(),
+                  tooltip: context.translate('back'),
                 ),
-                const SizedBox(height: 24),
-                Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 800),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.horizontalPadding),
-                      child: Column(
-                        children: [
-                          BookingStepper(currentStep: _currentStep),
-                          const SizedBox(height: 32),
-                          GlassCard(
-                            padding: const EdgeInsets.all(28),
-                            child: _buildStepContent(state),
-                          ),
-                          const SizedBox(height: 48),
-                        ],
-                      ),
+                Expanded(
+                  child: Text(
+                    context.translate('appointmentBooking'),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ),
               ],
             ),
-          );
-        },
+          ),
+          Expanded(
+            child: BlocConsumer<BookingCubit, BookingState>(
+              listener: (context, state) {
+                if (state is BookingSuccess) {
+                  context.read<BookingCubit>().reset();
+                  _showSuccessDialog(state.appointment);
+                } else if (state is BookingError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: AppColors.danger,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      PageHeader(
+                        badge: context.translate('appointmentBooking'),
+                        title: context.translate('scheduleConsultation'),
+                        subtitle: context.translate('bookingSubtitle'),
+                      ),
+                      const SizedBox(height: 24),
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 800),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppDimensions.horizontalPadding,
+                            ),
+                            child: Column(
+                              children: [
+                                BookingStepper(currentStep: _currentStep),
+                                const SizedBox(height: 32),
+                                GlassCard(
+                                  padding: const EdgeInsets.all(28),
+                                  child: _buildStepContent(state),
+                                ),
+                                const SizedBox(height: 48),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -270,7 +313,11 @@ class _BookingPageState extends State<BookingPage> {
         children: [
           Text(
             context.translate('chooseSpecialist'),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
           ),
           const SizedBox(height: 24),
           Row(
@@ -279,7 +326,14 @@ class _BookingPageState extends State<BookingPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(context.translate('specialty'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
+                    Text(
+                      context.translate('specialty'),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     BlocBuilder<DoctorsCubit, DoctorsState>(
                       builder: (context, state) {
@@ -287,9 +341,30 @@ class _BookingPageState extends State<BookingPage> {
                           initialValue: _selectedSpecialty,
                           hint: Text(context.translate('allSpecialties')),
                           items: [
-                            DropdownMenuItem(value: 'Pneumonia', child: Text(context.isArabic ? 'أمراض القلب' : 'Cardiologist')),
-                            DropdownMenuItem(value: 'Orthopedics', child: Text(context.isArabic ? 'العظام' : 'Orthopedist')),
-                            DropdownMenuItem(value: 'Neurology', child: Text(context.isArabic ? 'الأعصاب' : 'Neurologist')),
+                            DropdownMenuItem(
+                              value: 'Pneumonia',
+                              child: Text(
+                                context.isArabic
+                                    ? 'أمراض الصدر'
+                                    : context.translate('specialty'),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Orthopedics',
+                              child: Text(
+                                context.isArabic
+                                    ? 'العظام'
+                                    : context.translate('specialty'),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Neurology',
+                              child: Text(
+                                context.isArabic
+                                    ? 'الأعصاب'
+                                    : context.translate('specialty'),
+                              ),
+                            ),
                           ],
                           onChanged: (val) {
                             setState(() {
@@ -300,11 +375,20 @@ class _BookingPageState extends State<BookingPage> {
                           },
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: isDark ? const Color(0xFF05281D) : Colors.white,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            fillColor: isDark
+                                ? const Color(0xFF05281D)
+                                : Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: AppRadius.button,
-                              borderSide: BorderSide(color: isDark ? const Color(0xFF163F2F) : AppColors.border),
+                              borderSide: BorderSide(
+                                color: isDark
+                                    ? const Color(0xFF163F2F)
+                                    : AppColors.border,
+                              ),
                             ),
                           ),
                         );
@@ -319,7 +403,14 @@ class _BookingPageState extends State<BookingPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(context.translate('selectDoctor'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
+              Text(
+                context.translate('selectDoctor'),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary,
+                ),
+              ),
               const SizedBox(height: 8),
               BlocBuilder<DoctorsCubit, DoctorsState>(
                 builder: (context, state) {
@@ -327,7 +418,9 @@ class _BookingPageState extends State<BookingPage> {
                   if (state is DoctorsLoaded) {
                     list = state.doctors;
                     if (_selectedSpecialty != null) {
-                      list = list.where((d) => d.specialization == _selectedSpecialty).toList();
+                      list = list
+                          .where((d) => d.specialization == _selectedSpecialty)
+                          .toList();
                     }
                   }
 
@@ -335,7 +428,14 @@ class _BookingPageState extends State<BookingPage> {
                     initialValue: _selectedDoctor,
                     hint: Text(context.translate('chooseSpecialistHint')),
                     items: list
-                        .map((d) => DropdownMenuItem(value: d, child: Text('${context.isArabic ? "د." : "Dr."} ${d.fullName}')))
+                        .map(
+                          (d) => DropdownMenuItem(
+                            value: d,
+                            child: Text(
+                              '${context.isArabic ? 'د.' : 'Dr.'} ${d.fullName}',
+                            ),
+                          ),
+                        )
                         .toList(),
                     onChanged: (val) {
                       setState(() {
@@ -345,11 +445,20 @@ class _BookingPageState extends State<BookingPage> {
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: isDark ? const Color(0xFF05281D) : Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      fillColor: isDark
+                          ? const Color(0xFF05281D)
+                          : Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: AppRadius.button,
-                        borderSide: BorderSide(color: isDark ? const Color(0xFF163F2F) : AppColors.border),
+                        borderSide: BorderSide(
+                          color: isDark
+                              ? const Color(0xFF163F2F)
+                              : AppColors.border,
+                        ),
                       ),
                     ),
                   );
@@ -367,19 +476,31 @@ class _BookingPageState extends State<BookingPage> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.location_on_outlined, color: AppColors.primary),
+                  const Icon(
+                    Icons.location_on_outlined,
+                    color: AppColors.primary,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(context.translate('clinicAddress'), style: TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.bold)),
+                        Text(
+                          context.translate('clinicAddress'),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(height: 2),
                         Text(
                           _selectedDoctor!.clinicAddress,
                           style: TextStyle(
                             fontSize: 13,
-                            color: isDark ? Colors.white70 : AppColors.textPrimary,
+                            color: isDark
+                                ? Colors.white70
+                                : AppColors.textPrimary,
                           ),
                         ),
                       ],
@@ -396,11 +517,24 @@ class _BookingPageState extends State<BookingPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(context.translate('consultationDate'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
+                  Text(
+                    context.translate('consultationDate'),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   Text(
-                    DateFormat('EEEE, MMM dd, yyyy', context.isArabic ? 'ar' : 'en').format(_selectedDate),
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    DateFormat(
+                      'EEEE, MMM dd, yyyy',
+                      context.isArabic ? 'ar' : 'en',
+                    ).format(_selectedDate),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -416,7 +550,11 @@ class _BookingPageState extends State<BookingPage> {
           const SizedBox(height: 16),
           Text(
             context.translate('availableSlots'),
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 12),
           TimeSlotGrid(
@@ -428,7 +566,9 @@ class _BookingPageState extends State<BookingPage> {
           ),
           const SizedBox(height: 32),
           Align(
-            alignment: context.isArabic ? Alignment.centerLeft : Alignment.centerRight,
+            alignment: context.isArabic
+                ? Alignment.centerLeft
+                : Alignment.centerRight,
             child: AppButton(
               label: context.translate('continue_'),
               icon: context.isArabic ? Icons.arrow_back : Icons.arrow_forward,
@@ -445,7 +585,11 @@ class _BookingPageState extends State<BookingPage> {
           children: [
             Text(
               context.translate('personalInfo'),
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
             ),
             const SizedBox(height: 24),
             Row(
@@ -455,7 +599,10 @@ class _BookingPageState extends State<BookingPage> {
                     controller: _nameController,
                     label: context.translate('patientFullName'),
                     hint: context.isArabic ? 'محمد أحمد' : 'John Doe',
-                    validator: (v) => Validators.required(v, context.translate('patientName')),
+                    validator: (v) => Validators.required(
+                      v,
+                      context.translate('patientName'),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -483,12 +630,16 @@ class _BookingPageState extends State<BookingPage> {
                 AppButton(
                   label: context.translate('back'),
                   isOutlined: true,
-                  icon: context.isArabic ? Icons.arrow_forward : Icons.arrow_back,
+                  icon: context.isArabic
+                      ? Icons.arrow_forward
+                      : Icons.arrow_back,
                   onPressed: _prevStep,
                 ),
                 AppButton(
                   label: context.translate('summary'),
-                  icon: context.isArabic ? Icons.arrow_back : Icons.arrow_forward,
+                  icon: context.isArabic
+                      ? Icons.arrow_back
+                      : Icons.arrow_forward,
                   onPressed: _nextStep,
                 ),
               ],
@@ -503,7 +654,11 @@ class _BookingPageState extends State<BookingPage> {
         children: [
           Text(
             context.translate('confirmAppointment'),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
           ),
           const SizedBox(height: 24),
           Container(
@@ -511,7 +666,9 @@ class _BookingPageState extends State<BookingPage> {
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF093D2C) : const Color(0xFFF4FDF9),
               borderRadius: AppRadius.card,
-              border: Border.all(color: isDark ? const Color(0xFF114C39) : AppColors.border),
+              border: Border.all(
+                color: isDark ? const Color(0xFF114C39) : AppColors.border,
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -523,19 +680,46 @@ class _BookingPageState extends State<BookingPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(context.translate('specialist'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.textSecondary)),
+                          Text(
+                            context.translate('specialist'),
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
                           const SizedBox(height: 6),
-                          Text('${context.isArabic ? "د." : "Dr."} ${_selectedDoctor!.fullName}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                          Text(_selectedDoctor!.specialization, style: TextStyle(fontSize: 13, color: AppColors.primary, fontWeight: FontWeight.bold)),
+                          Text(
+                            '${context.isArabic ? 'د.' : 'Dr.'} ${_selectedDoctor!.fullName}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            _selectedDoctor!.specialization,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           const SizedBox(height: 6),
                           Row(
                             children: [
-                              const Icon(Icons.location_on_outlined, size: 14, color: AppColors.textSecondary),
+                              const Icon(
+                                Icons.location_on_outlined,
+                                size: 14,
+                                color: AppColors.textSecondary,
+                              ),
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
                                   _selectedDoctor!.clinicAddress,
-                                  style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -550,10 +734,33 @@ class _BookingPageState extends State<BookingPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(context.translate('schedule'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.textSecondary)),
+                          Text(
+                            context.translate('schedule'),
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
                           const SizedBox(height: 6),
-                          Text(DateFormat('MMMM dd, yyyy', context.isArabic ? 'ar' : 'en').format(_selectedDate), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                          Text(_selectedSlot!, style: TextStyle(fontSize: 13, color: AppColors.primary, fontWeight: FontWeight.bold)),
+                          Text(
+                            DateFormat(
+                              'MMMM dd, yyyy',
+                              context.isArabic ? 'ar' : 'en',
+                            ).format(_selectedDate),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            _selectedSlot!,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -562,11 +769,30 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 20),
                 const Divider(),
                 const SizedBox(height: 16),
-                Text(context.translate('patientDetailsLabel'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.textSecondary)),
+                Text(
+                  context.translate('patientDetailsLabel'),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
                 const SizedBox(height: 8),
-                Text('${context.translate('name')}: ${_nameController.text}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                Text(
+                  '${context.translate('name')}: ${_nameController.text}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text('${context.translate('phone')}: ${_phoneController.text}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                Text(
+                  '${context.translate('phone')}: ${_phoneController.text}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),

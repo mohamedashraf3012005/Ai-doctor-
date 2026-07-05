@@ -91,14 +91,15 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 24),
           AppTextField(
             controller: _emailController,
-            label: context.translate('username'),
-            hint: 'username or admin',
+            label: context.translate('email'),
+            hint: 'name@example.com',
             prefixIcon: _selectedRole == 'patient'
-                ? Icons.person_outline
+                ? Icons.email_outlined
                 : _selectedRole == 'doctor'
-                    ? Icons.person_pin_outlined
+                    ? Icons.email_outlined
                     : Icons.shield_outlined,
-            validator: Validators.username,
+            keyboardType: TextInputType.emailAddress,
+            validator: Validators.emailValidator(context),
           ),
           const SizedBox(height: 20),
           Column(
@@ -151,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                     });
                   },
                 ),
-                validator: Validators.password,
+                validator: Validators.passwordValidator(context),
               ),
             ],
           ),
@@ -161,13 +162,20 @@ class _LoginPageState extends State<LoginPage> {
               if (state is AuthAuthenticated) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Welcome, ${state.user.name}!'),
+                    content: Text('${context.translate('welcomeUser')}, ${state.user.name}!'),
                     backgroundColor: AppColors.success,
                   ),
                 );
                 _emailController.clear();
                 _passwordController.clear();
-                context.go('/dashboard');
+                // Navigate based on role
+                if (state.user.role == 'doctor') {
+                  context.go('/doctor-dashboard');
+                } else if (state.user.role == 'admin') {
+                  context.go('/admin-dashboard');
+                } else {
+                  context.go('/dashboard');
+                }
               } else if (state is AuthError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

@@ -6,6 +6,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/theme_cubit.dart';
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/utils/extensions.dart';
+import '../widgets/hero_section.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 
@@ -58,6 +59,7 @@ class HomePage extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     final isDark = context.isDark;
+    final isArabic = context.isArabic;
     return Row(
       children: [
         Container(
@@ -78,16 +80,18 @@ class HomePage extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
               Text(
-                'Smart Care 360',
+                context.translate('appTitle'),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20),
+                textAlign: isArabic ? TextAlign.right : TextAlign.left,
               ),
               const SizedBox(height: 2),
               Text(
-                'Smart AI Medical Platform',
+                context.translate('smartAiMedicalPlatform'),
                 style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: isArabic ? TextAlign.right : TextAlign.left,
               ),
             ],
           ),
@@ -183,119 +187,15 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildHero(BuildContext context) {
-    final theme = Theme.of(context);
-    final isMobile = context.isMobile;
-
-    final heroText = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 6,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: AppRadius.pill,
-          ),
-          child: const Text(
-            'Smart Healthcare Platform',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Your Integrated Platform for Smart Medical Care',
-          style: theme.textTheme.displayLarge?.copyWith(
-            color: Colors.white,
-            fontSize: isMobile ? 26 : 34,
-            height: 1.2,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          'Instant analysis of your medical scans, comprehensive health tracking, and direct connection with elite specialists to book your appointments.',
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: Colors.white.withValues(alpha: 0.9),
-            fontSize: 15,
-          ),
-        ),
-        const SizedBox(height: 24),
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: [
-            _pillButton(
-              context,
-              'Start Diagnosis',
-              true,
-              onTap: () => context.go('/diagnosis'),
-            ),
-            _pillButton(
-              context,
-              'Find a Doctor',
-              false,
-              onTap: () => context.go('/doctors'),
-            ),
-          ],
-        ),
-      ],
-    );
-
-    final heroIllustration = Container(
-      height: isMobile ? 180 : 250,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.16),
-        borderRadius: AppRadius.card,
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-      ),
-      child: const Center(
-        child: Icon(Icons.monitor_heart, color: Colors.white, size: 80),
-      ),
-    );
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF059669), Color(0xFF0D9488)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: AppRadius.card,
-        boxShadow: const [AppShadows.card],
-      ),
-      child: isMobile
-          ? Column(
-              children: [
-                heroText,
-                const SizedBox(height: 24),
-                heroIllustration,
-              ],
-            )
-          : Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(flex: 3, child: heroText),
-                const SizedBox(width: 24),
-                Expanded(flex: 2, child: heroIllustration),
-              ],
-            ),
-    );
-  }
+  Widget _buildHero(BuildContext context) => const HeroSection();
 
   Widget _buildFeatures(BuildContext context) {
+    final isArabic = context.isArabic;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Text(
-          'Platform Features',
+          context.translate('everythingYouNeed'),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontSize: 15,
             color: AppColors.primary,
@@ -304,13 +204,9 @@ class HomePage extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Everything You Need, In One Place',
-          style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 26),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'From instant scan analysis to specialist booking — our platform covers your full healthcare journey.',
-          style: Theme.of(context).textTheme.bodyLarge,
+          context.translate('everythingYouNeedDesc'),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+          textAlign: isArabic ? TextAlign.right : TextAlign.left,
         ),
         const SizedBox(height: 24),
         LayoutBuilder(
@@ -331,43 +227,49 @@ class HomePage extends StatelessWidget {
                 _featureCard(
                   context,
                   Icons.document_scanner_outlined,
-                  'Scan Analysis',
-                  'Upload X-rays, ECGs or reports for instant preliminary analysis of various medical conditions.',
+                  context.translate('aiDiagnosis'),
+                  context.translate('aiDiagnosisDesc'),
+                  actionText: context.translate('tryNow'),
                   onTap: () => context.go('/diagnosis'),
                 ),
                 _featureCard(
                   context,
                   Icons.groups_outlined,
-                  'Expert Doctors',
-                  'Connect with verified specialists based on your scan analysis results and book appointments instantly.',
+                  context.translate('expertDoctors'),
+                  context.translate('expertDoctorsDesc'),
+                  actionText: context.translate('browse'),
                   onTap: () => context.go('/doctors'),
                 ),
                 _featureCard(
                   context,
                   Icons.chat_bubble_outline,
-                  'Smart Chat',
-                  'Chat with your doctor or ask our medical assistant for guidance anytime, anywhere.',
+                  context.translate('smartChat'),
+                  context.translate('smartChatDesc'),
+                  actionText: context.translate('chatNow'),
                   onTap: () => context.go('/chat'),
                 ),
                 _featureCard(
                   context,
                   Icons.calendar_month_outlined,
-                  'Easy Booking',
-                  'Book, reschedule or cancel appointments with top specialists in just a few clicks.',
-                  onTap: () => context.go('/dashboard'),
+                  context.translate('easyBooking'),
+                  context.translate('easyBookingDesc'),
+                  actionText: context.translate('bookNow'),
+                  onTap: () => context.go('/booking'),
                 ),
                 _featureCard(
                   context,
                   Icons.security_outlined,
-                  'Secure & Private',
-                  'Your medical data is fully encrypted and protected.',
+                  context.translate('secureAndPrivate'),
+                  context.translate('secureAndPrivateDesc'),
+                  actionText: context.translate('learnMore'),
                   onTap: () {},
                 ),
                 _featureCard(
                   context,
                   Icons.bar_chart_outlined,
-                  'Health Tracking',
-                  'Monitor your diagnosis history, appointments, and health trends from your personal dashboard.',
+                  context.translate('healthTracking'),
+                  context.translate('healthTrackingDesc'),
+                  actionText: context.translate('myDashboard'),
                   onTap: () => context.go('/dashboard'),
                 ),
               ],
@@ -383,9 +285,11 @@ class HomePage extends StatelessWidget {
     IconData icon,
     String title,
     String description, {
+    String? actionText,
     required VoidCallback onTap,
   }) {
     final isDark = context.isDark;
+    final isArabic = context.isArabic;
     return InkWell(
       onTap: onTap,
       borderRadius: AppRadius.card,
@@ -398,7 +302,7 @@ class HomePage extends StatelessWidget {
           boxShadow: const [AppShadows.soft],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
@@ -429,8 +333,20 @@ class HomePage extends StatelessWidget {
                   height: 1.4,
                 ),
                 overflow: TextOverflow.fade,
+                textAlign: isArabic ? TextAlign.right : TextAlign.left,
               ),
             ),
+            if (actionText != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                actionText,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -440,12 +356,13 @@ class HomePage extends StatelessWidget {
   Widget _buildProcess(BuildContext context) {
     final isMobile = context.isMobile;
     final isDark = context.isDark;
+    final isArabic = context.isArabic;
 
     final steps = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Text(
-          'Simple Process',
+          context.translate('howOurSystemWorks'),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontSize: 15,
             color: AppColors.primary,
@@ -454,13 +371,9 @@ class HomePage extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'How Our System Works',
-          style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 26),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          'Three simple steps to get your preliminary medical analysis in seconds.',
-          style: Theme.of(context).textTheme.bodyLarge,
+          context.translate('howOurSystemWorksDesc'),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+          textAlign: isArabic ? TextAlign.right : TextAlign.left,
         ),
         const SizedBox(height: 22),
         ...List.generate(3, (index) {
@@ -473,6 +386,7 @@ class HomePage extends StatelessWidget {
               border: Border.all(color: isDark ? const Color(0xFF093D2C) : AppColors.border),
             ),
             child: Row(
+              textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
               children: [
                 CircleAvatar(
                   radius: 18,
@@ -488,14 +402,14 @@ class HomePage extends StatelessWidget {
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                     children: [
                       Text(
                         index == 0
-                            ? 'Upload Your Scan'
+                            ? context.translate('uploadYourScan')
                             : index == 1
-                                ? 'Smart Analysis'
-                                : 'Get Results & Book',
+                                ? context.translate('aiAnalysis')
+                                : context.translate('getResultsBook'),
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
@@ -505,10 +419,10 @@ class HomePage extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         index == 0
-                            ? 'Upload your X-ray, ECG image, or PDF medical report to our secure platform.'
+                            ? context.translate('uploadYourScanDesc')
                             : index == 1
-                                ? 'Our analysis models scan and detect anomalies or conditions within seconds.'
-                                : 'Receive a detailed report with confidence scores and book the right specialist instantly.',
+                                ? context.translate('aiAnalysisDesc')
+                                : context.translate('getResultsBookDesc'),
                         style: const TextStyle(
                           fontSize: 13,
                           color: AppColors.textSecondary,
@@ -534,9 +448,9 @@ class HomePage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _miniStatCard('96%', 'Confidence', AppColors.primary),
+          _miniStatCard('96%', context.translate('confidence'), AppColors.primary),
           const SizedBox(height: 12),
-          _miniStatCard('<3s', 'Analysis Time', AppColors.secondary),
+          _miniStatCard('<3s', context.translate('analysisTime'), AppColors.secondary),
           const SizedBox(height: 12),
           Container(
             height: 140,
@@ -631,32 +545,25 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildServices(BuildContext context) {
+    final isArabic = context.isArabic;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Text(
-          'What We Detect',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontSize: 15,
-            color: AppColors.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Comprehensive Medical Services',
+          context.translate('comprehensiveMedicalServices'),
           style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 26),
+          textAlign: isArabic ? TextAlign.right : TextAlign.left,
         ),
         const SizedBox(height: 20),
         Wrap(
           spacing: 12,
           runSpacing: 12,
           children: [
-            _serviceChip(context, 'Bone Fracture Detection', Icons.healing),
-            _serviceChip(context, 'Heart Disease Analysis', Icons.favorite_border),
-            _serviceChip(context, 'Brain Tumor Detection', Icons.psychology_outlined),
-            _serviceChip(context, 'Report Analysis (PDF)', Icons.picture_as_pdf_outlined),
-            _serviceChip(context, 'Lung Condition Screening', Icons.air),
+            _serviceChip(context, context.translate('boneFractureService'), Icons.healing),
+            _serviceChip(context, context.translate('heartDiseaseService'), Icons.favorite_border),
+            _serviceChip(context, context.translate('brainTumorService'), Icons.psychology_outlined),
+            _serviceChip(context, context.translate('reportAnalysisService'), Icons.picture_as_pdf_outlined),
+            _serviceChip(context, context.translate('lungConditionService'), Icons.air),
           ],
         ),
       ],
@@ -692,6 +599,7 @@ class HomePage extends StatelessWidget {
 
   Widget _buildCTA(BuildContext context) {
     final isMobile = context.isMobile;
+    final isArabic = context.isArabic;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(28),
@@ -700,21 +608,21 @@ class HomePage extends StatelessWidget {
         borderRadius: AppRadius.card,
       ),
       child: Column(
-        crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+        crossAxisAlignment: isMobile ? CrossAxisAlignment.center : (isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start),
         children: [
           Text(
-            'Ready to take control of your health?',
+            context.translate('readyToTakeControl'),
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
               color: Colors.white,
               fontSize: isMobile ? 22 : 28,
             ),
-            textAlign: isMobile ? TextAlign.center : TextAlign.start,
+            textAlign: isMobile ? TextAlign.center : (isArabic ? TextAlign.right : TextAlign.left),
           ),
           const SizedBox(height: 10),
           Text(
-            'Start your free analysis today. No registration required for the first scan.',
+            context.translate('startFreeAnalysis'),
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white70),
-            textAlign: isMobile ? TextAlign.center : TextAlign.start,
+            textAlign: isMobile ? TextAlign.center : (isArabic ? TextAlign.right : TextAlign.left),
           ),
           const SizedBox(height: 20),
           Wrap(
@@ -724,14 +632,14 @@ class HomePage extends StatelessWidget {
             children: [
               _pillButton(
                 context,
-                'Start Free Analysis',
+                context.translate('startFreeAnalysisBtn'),
                 true,
                 dark: true,
                 onTap: () => context.go('/diagnosis'),
               ),
               _pillButton(
                 context,
-                'Find a Specialist',
+                context.translate('findSpecialist'),
                 false,
                 dark: true,
                 onTap: () => context.go('/doctors'),
@@ -745,6 +653,7 @@ class HomePage extends StatelessWidget {
 
   Widget _buildFooter(BuildContext context) {
     final isDark = context.isDark;
+    final isArabic = context.isArabic;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -754,30 +663,35 @@ class HomePage extends StatelessWidget {
         border: Border.all(color: isDark ? const Color(0xFF093D2C) : AppColors.border),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          Text('Smart Care 360', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            context.translate('appTitle'),
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: isArabic ? TextAlign.right : TextAlign.left,
+          ),
           const SizedBox(height: 8),
           Text(
-            'Smart Care 360 is an advanced healthcare platform leveraging clinical technology to provide instant medical insights and connect patients with top specialists.',
+            context.translate('footerDesc'),
             style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: isArabic ? TextAlign.right : TextAlign.left,
           ),
           const SizedBox(height: 20),
           Wrap(
             spacing: 16,
             runSpacing: 8,
             children: [
-              _footerLink('Home', () => context.go('/home')),
-              _footerLink('Instant Diagnosis', () => context.go('/diagnosis')),
-              _footerLink('Doctors', () => context.go('/doctors')),
-              _footerLink('Dashboard', () => context.go('/dashboard')),
+              _footerLink(context.translate('home'), () => context.go('/home')),
+              _footerLink(context.translate('diagnosis'), () => context.go('/diagnosis')),
+              _footerLink(context.translate('doctors'), () => context.go('/doctors')),
+              _footerLink(context.translate('dashboard'), () => context.go('/dashboard')),
             ],
           ),
           const SizedBox(height: 20),
           const Divider(height: 1),
           const SizedBox(height: 16),
           Text(
-            '© 2026 Smart Care 360. All rights reserved.',
+            context.translate('copyright'),
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ],

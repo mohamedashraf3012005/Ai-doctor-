@@ -1,10 +1,12 @@
 import 'package:dartz/dartz.dart';
+
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/storage/secure_storage_service.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../data_sources/auth_remote_data_source.dart';
+import '../models/user_model.dart';
 
 /// Implementation of [AuthRepository] connecting remote data source with domain.
 class AuthRepositoryImpl implements AuthRepository {
@@ -25,14 +27,7 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
         role: role,
       );
-      await _storage.saveSession(
-        token: result.token,
-        role: result.user.role,
-        userId: result.user.id,
-        userName: result.user.name,
-        userEmail: result.user.email,
-        userPhone: result.user.phone,
-      );
+      await _saveAuthSession(result.token, result.user);
       return Right((token: result.token, user: result.user.toEntity()));
     } on UnauthorizedException catch (e) {
       return Left(AuthFailure(e.message));
@@ -52,8 +47,8 @@ class AuthRepositoryImpl implements AuthRepository {
     int? age,
     String? gender,
   }) async {
-    try {
-      final payload = {
+    return _registerAndSignIn(
+      payload: {
         'FullName': fullName,
         'Email': email,
         'Phone': phone,
@@ -61,22 +56,11 @@ class AuthRepositoryImpl implements AuthRepository {
         'Role': 'patient',
         if (age != null) 'Age': age,
         if (gender != null) 'Gender': gender,
-      };
-      final result = await _remoteDataSource.register(payload: payload);
-      await _storage.saveSession(
-        token: result.token,
-        role: 'patient',
-        userId: result.user.id,
-        userName: result.user.name,
-        userEmail: result.user.email,
-        userPhone: result.user.phone,
-      );
-      return Right((token: result.token, user: result.user.toEntity()));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message, statusCode: e.statusCode));
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
+      },
+      email: email,
+      password: password,
+      role: 'patient',
+    );
   }
 
   @override
@@ -91,8 +75,8 @@ class AuthRepositoryImpl implements AuthRepository {
     String? clinicAddress,
     String? idCardPath,
   }) async {
-    try {
-      final payload = {
+    return _registerAndSignIn(
+      payload: {
         'FullName': fullName,
         'Email': email,
         'Phone': phone,
@@ -102,25 +86,93 @@ class AuthRepositoryImpl implements AuthRepository {
         if (experienceYears != null) 'ExperienceYears': experienceYears,
         if (gender != null) 'Gender': gender,
         if (clinicAddress != null) 'ClinicAddress': clinicAddress,
-      };
-      final result = await _remoteDataSource.register(
+      },
+      email: email,
+      password: password,
+      role: 'doctor',
+      idCardPath: idCardPath,
+    );
+  }
+
+  Future<Either<Failure, ({String token, UserEntity user})>> _registerAndSignIn({
+    required Map<String, dynamic> payload,
+    required String email,
+    required String password,
+    required String role,
+    String? idCardPath,
+  }) async {
+    try {
+      final registrationResult = await _remoteDataSource.register(
         payload: payload,
         idCardPath: idCardPath,
       );
-      await _storage.saveSession(
-        token: result.token,
-        role: 'doctor',
-        userId: result.user.id,
-        userName: result.user.name,
-        userEmail: result.user.email,
-        userPhone: result.user.phone,
+
+      // Force the correct role in the model regardless of what backend returned.
+      final forcedUser = UserModel(
+        id: registrationResult.user.id,
+        name: registrationResult.user.name,
+        email: registrationResult.user.email,
+        role: role,
+        phone: registrationResult.user.phone,
+        age: registrationResult.user.age,
+        gender: registrationResult.user.gender,
+        specialization: registrationResult.user.specialization,
+        experienceYears: registrationResult.user.experienceYears,
+        clinicAddress: registrationResult.user.clinicAddress,
+        profileImageUrl: registrationResult.user.profileImageUrl,
       );
-      return Right((token: result.token, user: result.user.toEntity()));
+
+      if (registrationResult.token.isNotEmpty) {
+        await _saveAuthSession(registrationResult.token, forcedUser);
+        return Right((
+          token: registrationResult.token,
+          user: forcedUser.toEntity(),
+        ));
+      }
+
+      // Backend register returns only a success message — sign in explicitly.
+      final loginResult = await _remoteDataSource.login(
+        userName: email,
+        password: password,
+        role: role,
+      );
+      // Force the correct role on the login result too.
+      final forcedLoginUser = UserModel(
+        id: loginResult.user.id,
+        name: loginResult.user.name,
+        email: loginResult.user.email,
+        role: role,
+        phone: loginResult.user.phone,
+        age: loginResult.user.age,
+        gender: loginResult.user.gender,
+        specialization: loginResult.user.specialization,
+        experienceYears: loginResult.user.experienceYears,
+        clinicAddress: loginResult.user.clinicAddress,
+        profileImageUrl: loginResult.user.profileImageUrl,
+      );
+      await _saveAuthSession(loginResult.token, forcedLoginUser);
+      return Right((
+        token: loginResult.token,
+        user: forcedLoginUser.toEntity(),
+      ));
+    } on UnauthorizedException catch (e) {
+      return Left(AuthFailure(e.message));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, statusCode: e.statusCode));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
+  }
+
+  Future<void> _saveAuthSession(String token, UserModel user) async {
+    await _storage.saveSession(
+      token: token,
+      role: user.role,
+      userId: user.id,
+      userName: user.name,
+      userEmail: user.email,
+      userPhone: user.phone,
+    );
   }
 
   @override
@@ -196,8 +248,11 @@ class AuthRepositoryImpl implements AuthRepository {
     required String newPassword,
   }) async {
     try {
-      final result =
-          await _remoteDataSource.resetPassword(email, otp, newPassword);
+      final result = await _remoteDataSource.resetPassword(
+        email,
+        otp,
+        newPassword,
+      );
       return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, statusCode: e.statusCode));

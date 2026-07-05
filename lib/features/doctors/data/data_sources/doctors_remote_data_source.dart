@@ -28,8 +28,21 @@ class DoctorsRemoteDataSource {
         queryParameters: queryParams,
       );
 
-      final List<dynamic> list = response.data;
-      return list.map((item) => DoctorModel.fromJson(item)).toList();
+      // Handle both List responses and wrapped object responses
+      final data = response.data;
+      List<dynamic> list;
+      if (data is List) {
+        list = data;
+      } else if (data is Map<String, dynamic>) {
+        // Some APIs wrap results: { "data": [...] } or { "doctors": [...] }
+        list = data['data'] ?? data['doctors'] ?? data['items'] ?? [];
+      } else {
+        list = [];
+      }
+      return list
+          .whereType<Map<String, dynamic>>()
+          .map((item) => DoctorModel.fromJson(item))
+          .toList();
     } on DioException catch (e) {
       throw _handleDioError(e);
     }

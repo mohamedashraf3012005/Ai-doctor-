@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'core/di/service_locator.dart' as di;
+import 'core/localization/app_localizations.dart';
 import 'core/localization/locale_cubit.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -17,6 +19,9 @@ import 'features/doctors/presentation/cubit/doctors_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize localization date symbol formatting
+  await initializeDateFormatting();
 
   // Initialize service locator dependency injections
   await di.init();
@@ -39,9 +44,7 @@ class Care360App extends StatelessWidget {
         BlocProvider<AuthCubit>(
           create: (context) => di.sl<AuthCubit>()..checkAuthStatus(),
         ),
-        BlocProvider<DoctorsCubit>(
-          create: (context) => di.sl<DoctorsCubit>(),
-        ),
+        BlocProvider<DoctorsCubit>(create: (context) => di.sl<DoctorsCubit>()),
         BlocProvider<DoctorAvailabilityCubit>(
           create: (context) => di.sl<DoctorAvailabilityCubit>(),
         ),
@@ -51,15 +54,11 @@ class Care360App extends StatelessWidget {
         BlocProvider<MyDiagnosesCubit>(
           create: (context) => di.sl<MyDiagnosesCubit>(),
         ),
-        BlocProvider<BookingCubit>(
-          create: (context) => di.sl<BookingCubit>(),
-        ),
+        BlocProvider<BookingCubit>(create: (context) => di.sl<BookingCubit>()),
         BlocProvider<MyAppointmentsCubit>(
           create: (context) => di.sl<MyAppointmentsCubit>(),
         ),
-        BlocProvider<ChatCubit>(
-          create: (context) => di.sl<ChatCubit>(),
-        ),
+        BlocProvider<ChatCubit>(create: (context) => di.sl<ChatCubit>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {
@@ -72,11 +71,18 @@ class Care360App extends StatelessWidget {
                 darkTheme: AppTheme.darkTheme,
                 themeMode: themeMode,
                 locale: locale,
-                supportedLocales: const [
-                  Locale('en'),
-                  Locale('ar'),
-                ],
+                builder: (context, child) {
+                  final direction = locale.languageCode == 'ar'
+                      ? TextDirection.rtl
+                      : TextDirection.ltr;
+                  return Directionality(
+                    textDirection: direction,
+                    child: child!,
+                  );
+                },
+                supportedLocales: const [Locale('en'), Locale('ar')],
                 localizationsDelegates: const [
+                  AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,
