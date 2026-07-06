@@ -41,6 +41,7 @@ dependencies:
   shimmer: ^3.0.0
   percent_indicator: ^4.2.4
   flutter_markdown: ^0.7.6
+  fl_chart: ^0.70.2
 
   # State Management
   flutter_bloc: ^9.1.1

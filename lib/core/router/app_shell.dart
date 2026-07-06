@@ -15,10 +15,20 @@ class AppShell extends StatelessWidget {
 
   int _getSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
-    if (location.startsWith('/doctors')) return 1;
-    if (location.startsWith('/diagnosis')) return 2;
-    if (location.startsWith('/chat')) return 3;
-    if (location.startsWith('/dashboard')) return 4;
+    if (location.startsWith('/doctors')) {
+      return 1;
+    }
+    if (location.startsWith('/diagnosis')) {
+      return 2;
+    }
+    if (location.startsWith('/chat')) {
+      return 3;
+    }
+    if (location.startsWith('/dashboard') ||
+        location.startsWith('/admin-dashboard') ||
+        location.startsWith('/doctor-dashboard')) {
+      return 4;
+    }
     return 0; // Home
   }
 
@@ -46,7 +56,18 @@ class AppShell extends StatelessWidget {
   void _checkAuthAndNavigate(BuildContext context, String path) {
     final authState = context.read<AuthCubit>().state;
     if (authState is AuthAuthenticated) {
-      context.go(path);
+      if (path == '/dashboard') {
+        final role = authState.user.role.toLowerCase();
+        if (role == 'admin') {
+          context.go('/admin-dashboard');
+        } else if (role == 'doctor') {
+          context.go('/doctor-dashboard');
+        } else {
+          context.go('/dashboard');
+        }
+      } else {
+        context.go(path);
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

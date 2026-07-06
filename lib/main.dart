@@ -16,6 +16,8 @@ import 'features/booking/presentation/cubit/booking_cubit.dart';
 import 'features/chat/presentation/cubit/chat_cubit.dart';
 import 'features/diagnosis/presentation/cubit/diagnosis_cubit.dart';
 import 'features/doctors/presentation/cubit/doctors_cubit.dart';
+import 'features/admin/presentation/cubit/admin_cubit.dart';
+import 'features/dashboard/presentation/cubit/doctor_dashboard_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +61,8 @@ class Care360App extends StatelessWidget {
           create: (context) => di.sl<MyAppointmentsCubit>(),
         ),
         BlocProvider<ChatCubit>(create: (context) => di.sl<ChatCubit>()),
+        BlocProvider<AdminCubit>(create: (context) => di.sl<AdminCubit>()),
+        BlocProvider<DoctorDashboardCubit>(create: (context) => di.sl<DoctorDashboardCubit>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {

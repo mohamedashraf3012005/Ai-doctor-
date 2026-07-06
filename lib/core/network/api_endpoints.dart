@@ -16,6 +16,7 @@ class ApiEndpoints {
   static String doctorAvailability(String id) => 'doctors/$id/availability';
   static const String doctorProfile = 'doctors/profile';
   static const String doctorDashboard = 'doctors/dashboard';
+  static const String doctorAvailabilityPost = 'doctors/availability';
 
   // ─── Appointments ─────────────────────────────────────────
   static const String appointments = 'appointments';
@@ -44,4 +45,21 @@ class ApiEndpoints {
   // ─── Notifications ────────────────────────────────────────
   static const String notifications = 'notifications';
   static String markNotificationRead(String id) => 'notifications/$id/read';
+
+  // ─── Admin ───────────────────────────────────────────────
+  static const String publicStats = 'public/stats';
+  static const String adminPatients = 'admin/patients';
+  static const String adminDoctors = 'admin/doctors';
+  static const String adminDashboardStats = 'admin/dashboardStats';
+  static const String adminCharts = 'admin/charts';
+  static const String adminAppointments = 'admin/appointments';
+  static const String adminSpecialties = 'admin/specialties';
+  static String adminDeletePatient(String id) => 'admin/patients/$id';
+  static String adminDeleteDoctor(String id) => 'admin/doctors/$id';
+  static String adminApproveDoctor(String id) => 'admin/doctors/$id/approve';
+  static String adminRejectDoctor(String id) => 'admin/doctors/$id/reject';
+  static String adminAppointmentStatus(String id) => 'admin/appointments/$id/status';
+  static const String adminRegisterDoctor = 'admin/doctors/register';
+  static const String adminRegisterPatient = 'admin/patients/register';
+  static const String adminActivity = 'admin/activity';
 }

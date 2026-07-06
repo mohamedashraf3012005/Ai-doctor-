@@ -45,6 +45,18 @@ import '../../features/chat/domain/use_cases/get_chat_history_use_case.dart';
 import '../../features/chat/domain/use_cases/get_contacts_use_case.dart';
 import '../../features/chat/presentation/cubit/chat_cubit.dart';
 
+// Admin Imports
+import '../../features/admin/data/data_sources/admin_remote_data_source.dart';
+import '../../features/admin/data/repositories/admin_repository_impl.dart';
+import '../../features/admin/domain/repositories/admin_repository.dart';
+import '../../features/admin/presentation/cubit/admin_cubit.dart';
+
+// Doctor Dashboard Imports
+import '../../features/dashboard/data/data_sources/doctor_dashboard_remote_data_source.dart';
+import '../../features/dashboard/data/repositories/doctor_dashboard_repository_impl.dart';
+import '../../features/dashboard/domain/repositories/doctor_dashboard_repository.dart';
+import '../../features/dashboard/presentation/cubit/doctor_dashboard_cubit.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -136,4 +148,14 @@ Future<void> init() async {
         summarizeChatUseCase: sl(),
         storage: sl(),
       ));
+
+  // ─── Admin Feature ────────────────────────────────────────
+  sl.registerLazySingleton<AdminRemoteDataSource>(() => AdminRemoteDataSource(sl()));
+  sl.registerLazySingleton<AdminRepository>(() => AdminRepositoryImpl(sl()));
+  sl.registerFactory<AdminCubit>(() => AdminCubit(repository: sl()));
+
+  // ─── Doctor Dashboard Feature ──────────────────────────────
+  sl.registerLazySingleton<DoctorDashboardRemoteDataSource>(() => DoctorDashboardRemoteDataSource(sl()));
+  sl.registerLazySingleton<DoctorDashboardRepository>(() => DoctorDashboardRepositoryImpl(sl()));
+  sl.registerFactory<DoctorDashboardCubit>(() => DoctorDashboardCubit(repository: sl()));
 }
