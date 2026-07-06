@@ -28,9 +28,9 @@ class DoctorDashboardStatsModel {
   });
 
   factory DoctorDashboardStatsModel.fromJson(Map<String, dynamic> json) {
-    var todayApptsList = json['todayAppointments'] ?? json['TodayAppointments'] as List? ?? [];
-    var pastApptsList = json['pastAppointments'] ?? json['PastAppointments'] as List? ?? [];
-    var pendingRepList = json['pendingReports'] ?? json['PendingReports'] as List? ?? [];
+    final todayApptsList = json['todayAppointments'] ?? json['TodayAppointments'] as List? ?? [];
+    final pastApptsList = json['pastAppointments'] ?? json['PastAppointments'] as List? ?? [];
+    final pendingRepList = json['pendingReports'] ?? json['PendingReports'] as List? ?? [];
     
     final scanStatsMap = json['scanStats'] ?? json['ScanStats'] as Map<String, dynamic>? ?? {};
     final weeklyList = json['weeklyAppointments'] ?? json['WeeklyAppointments'] as List? ?? [];
@@ -43,9 +43,9 @@ class DoctorDashboardStatsModel {
       newReportsCount: json['newReportsCount'] ?? json['NewReportsCount'] ?? 0,
       doctorName: json['doctorName'] ?? json['DoctorName'] ?? '',
       doctorSpecialty: json['doctorSpecialty'] ?? json['DoctorSpecialty'] ?? '',
-      todayAppointments: todayApptsList.map((e) => DoctorDashboardAppointmentModel.fromJson(e)).toList(),
-      pastAppointments: pastApptsList.map((e) => DoctorDashboardAppointmentModel.fromJson(e)).toList(),
-      pendingReports: pendingRepList.map((e) => DoctorDashboardReportModel.fromJson(e)).toList(),
+      todayAppointments: (todayApptsList as List).map<DoctorDashboardAppointmentModel>((e) => DoctorDashboardAppointmentModel.fromJson(e)).toList(),
+      pastAppointments: (pastApptsList as List).map<DoctorDashboardAppointmentModel>((e) => DoctorDashboardAppointmentModel.fromJson(e)).toList(),
+      pendingReports: (pendingRepList as List).map<DoctorDashboardReportModel>((e) => DoctorDashboardReportModel.fromJson(e)).toList(),
       scanStats: DoctorDashboardScanStatsModel.fromJson(scanStatsMap),
       weeklyAppointments: List<int>.from(weeklyList.map((e) => (e as num).toInt())),
     );
@@ -187,7 +187,7 @@ class DoctorPatientDetailsModel {
   });
 
   factory DoctorPatientDetailsModel.fromJson(Map<String, dynamic> json) {
-    var scansList = json['scans'] ?? json['Scans'] as List? ?? [];
+    final scansList = json['scans'] ?? json['Scans'] as List? ?? [];
     return DoctorPatientDetailsModel(
       id: json['id']?.toString() ?? json['Id']?.toString() ?? '',
       fullName: json['fullName'] ?? json['FullName'] ?? 'Patient',
@@ -195,7 +195,7 @@ class DoctorPatientDetailsModel {
       gender: json['gender'] ?? json['Gender'] ?? 'Male',
       age: json['age'] ?? json['Age'],
       medicalHistory: json['medicalHistory'] ?? json['MedicalHistory'],
-      scans: scansList.map((e) => DoctorDashboardReportModel.fromJson(e)).toList(),
+      scans: (scansList as List).map<DoctorDashboardReportModel>((e) => DoctorDashboardReportModel.fromJson(e)).toList(),
     );
   }
 }
@@ -222,7 +222,7 @@ class DoctorProfileModel {
   });
 
   factory DoctorProfileModel.fromJson(Map<String, dynamic> json) {
-    var list = json['availabilities'] ?? json['Availabilities'] as List? ?? [];
+    final list = json['availabilities'] ?? json['Availabilities'] as List? ?? [];
     return DoctorProfileModel(
       fullName: json['fullName'] ?? json['FullName'] ?? '',
       specialty: json['specialty'] ?? json['Specialty'] ?? '',
@@ -231,7 +231,7 @@ class DoctorProfileModel {
       bio: json['bio'] ?? json['Bio'] ?? '',
       clinicAddress: json['clinicAddress'] ?? json['ClinicAddress'] ?? '',
       rating: (json['rating'] ?? json['Rating'] as num?)?.toDouble() ?? 0.0,
-      availabilities: list.map((e) => DoctorAvailabilityModel.fromJson(e)).toList(),
+      availabilities: (list as List).map<DoctorAvailabilityModel>((e) => DoctorAvailabilityModel.fromJson(e)).toList(),
     );
   }
 }

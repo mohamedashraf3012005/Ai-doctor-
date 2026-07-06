@@ -62,7 +62,9 @@ class Care360App extends StatelessWidget {
         ),
         BlocProvider<ChatCubit>(create: (context) => di.sl<ChatCubit>()),
         BlocProvider<AdminCubit>(create: (context) => di.sl<AdminCubit>()),
-        BlocProvider<DoctorDashboardCubit>(create: (context) => di.sl<DoctorDashboardCubit>()),
+        BlocProvider<DoctorDashboardCubit>(
+          create: (context) => di.sl<DoctorDashboardCubit>(),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {

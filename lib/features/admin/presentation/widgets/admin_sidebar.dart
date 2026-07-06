@@ -86,14 +86,14 @@ class AdminSidebar extends StatelessWidget {
                   index: 0,
                   icon: Icons.dashboard_outlined,
                   activeIcon: Icons.dashboard,
-                  title: context.translate('nav_overview'),
+                  title: context.translate('overview'),
                 ),
                 _buildNavItem(
                   context,
                   index: 1,
                   icon: Icons.people_outline,
                   activeIcon: Icons.people,
-                  title: context.translate('nav_patients'),
+                  title: context.translate('patients'),
                 ),
                 _buildNavItem(
                   context,

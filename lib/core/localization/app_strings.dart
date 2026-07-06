@@ -715,6 +715,9 @@ class AppStrings {
     'scheduleUpdated': {'en': 'Schedule updated successfully!', 'ar': 'تم تحديث الجدول بنجاح!'},
 
     'youHave': {'en': 'You have', 'ar': 'لديك'},
+    'overview': {'en': 'Overview', 'ar': 'الرئيسية'},
+    'patients': {'en': 'Patients', 'ar': 'المرضى'},
+    'reports': {'en': 'Reports', 'ar': 'التقارير'},
   };
 
   /// Get a translated string by key and locale code.

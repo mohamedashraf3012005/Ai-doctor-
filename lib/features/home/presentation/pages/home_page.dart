@@ -80,13 +80,11 @@ class HomePage extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: Column(
-            crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            crossAxisAlignment: isArabic
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.start,
             children: [
-              Text(
-                context.translate('appTitle'),
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20),
-                textAlign: isArabic ? TextAlign.right : TextAlign.left,
-              ),
+              AnimatedLogo(isArabic: isArabic),
               const SizedBox(height: 2),
               Text(
                 context.translate('smartAiMedicalPlatform'),
@@ -112,7 +110,10 @@ class HomePage extends StatelessWidget {
               onTap: () => context.read<LocaleCubit>().toggleLocale(),
               borderRadius: BorderRadius.circular(20),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
@@ -124,7 +125,9 @@ class HomePage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? const Color(0xFFECFDF5) : AppColors.textPrimary,
+                    color: isDark
+                        ? const Color(0xFFECFDF5)
+                        : AppColors.textPrimary,
                   ),
                 ),
               ),
@@ -137,15 +140,24 @@ class HomePage extends StatelessWidget {
                     onTap: () => context.go('/dashboard'),
                     borderRadius: AppRadius.pill,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: AppRadius.pill,
-                        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.3),
+                        ),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.dashboard_outlined, size: 16, color: AppColors.primary),
+                          Icon(
+                            Icons.dashboard_outlined,
+                            size: 16,
+                            color: AppColors.primary,
+                          ),
                           const SizedBox(width: 6),
                           Text(
                             context.translate('dashboard'),
@@ -164,17 +176,32 @@ class HomePage extends StatelessWidget {
                   onTap: () => context.push('/login'),
                   borderRadius: AppRadius.pill,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF093D2C) : AppColors.surfaceAlt,
+                      color: isDark
+                          ? const Color(0xFF093D2C)
+                          : AppColors.surfaceAlt,
                       borderRadius: AppRadius.pill,
-                      border: Border.all(color: isDark ? const Color(0xFF114C39) : AppColors.border),
+                      border: Border.all(
+                        color: isDark
+                            ? const Color(0xFF114C39)
+                            : AppColors.border,
+                      ),
                     ),
                     child: Row(
                       children: [
                         const Icon(Icons.login, size: 16),
                         const SizedBox(width: 6),
-                        Text(context.translate('signIn'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                        Text(
+                          context.translate('signIn'),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -192,7 +219,9 @@ class HomePage extends StatelessWidget {
   Widget _buildFeatures(BuildContext context) {
     final isArabic = context.isArabic;
     return Column(
-      crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: isArabic
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         Text(
           context.translate('everythingYouNeed'),
@@ -214,8 +243,8 @@ class HomePage extends StatelessWidget {
             final crossAxisCount = constraints.maxWidth > 900
                 ? 3
                 : constraints.maxWidth > 600
-                    ? 2
-                    : 1;
+                ? 2
+                : 1;
             return GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -298,11 +327,15 @@ class HomePage extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF05281D) : AppColors.surfaceAlt,
           borderRadius: AppRadius.card,
-          border: Border.all(color: isDark ? const Color(0xFF093D2C) : AppColors.border),
+          border: Border.all(
+            color: isDark ? const Color(0xFF093D2C) : AppColors.border,
+          ),
           boxShadow: const [AppShadows.soft],
         ),
         child: Column(
-          crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: isArabic
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
@@ -359,7 +392,9 @@ class HomePage extends StatelessWidget {
     final isArabic = context.isArabic;
 
     final steps = Column(
-      crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: isArabic
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         Text(
           context.translate('howOurSystemWorks'),
@@ -383,7 +418,9 @@ class HomePage extends StatelessWidget {
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF05281D) : AppColors.surfaceAlt,
               borderRadius: AppRadius.card,
-              border: Border.all(color: isDark ? const Color(0xFF093D2C) : AppColors.border),
+              border: Border.all(
+                color: isDark ? const Color(0xFF093D2C) : AppColors.border,
+              ),
             ),
             child: Row(
               textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
@@ -402,14 +439,16 @@ class HomePage extends StatelessWidget {
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                    crossAxisAlignment: isArabic
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
                     children: [
                       Text(
                         index == 0
                             ? context.translate('uploadYourScan')
                             : index == 1
-                                ? context.translate('aiAnalysis')
-                                : context.translate('getResultsBook'),
+                            ? context.translate('aiAnalysis')
+                            : context.translate('getResultsBook'),
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
@@ -421,8 +460,8 @@ class HomePage extends StatelessWidget {
                         index == 0
                             ? context.translate('uploadYourScanDesc')
                             : index == 1
-                                ? context.translate('aiAnalysisDesc')
-                                : context.translate('getResultsBookDesc'),
+                            ? context.translate('aiAnalysisDesc')
+                            : context.translate('getResultsBookDesc'),
                         style: const TextStyle(
                           fontSize: 13,
                           color: AppColors.textSecondary,
@@ -443,41 +482,31 @@ class HomePage extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF05281D) : AppColors.surfaceAlt,
         borderRadius: AppRadius.card,
-        border: Border.all(color: isDark ? const Color(0xFF093D2C) : AppColors.border),
+        border: Border.all(
+          color: isDark ? const Color(0xFF093D2C) : AppColors.border,
+        ),
         boxShadow: const [AppShadows.soft],
       ),
       child: Column(
         children: [
-          _miniStatCard('96%', context.translate('confidence'), AppColors.primary),
-          const SizedBox(height: 12),
-          _miniStatCard('<3s', context.translate('analysisTime'), AppColors.secondary),
-          const SizedBox(height: 12),
-          Container(
-            height: 140,
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF093D2C) : AppColors.surface,
-              borderRadius: AppRadius.card,
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.image_outlined,
-                size: 50,
-                color: AppColors.textSecondary,
-              ),
-            ),
+          _miniStatCard(
+            '96%',
+            context.translate('confidence'),
+            AppColors.primary,
           ),
+          const SizedBox(height: 12),
+          _miniStatCard(
+            '<3s',
+            context.translate('analysisTime'),
+            AppColors.secondary,
+          ),
+          const SizedBox(height: 12),
         ],
       ),
     );
 
     if (isMobile) {
-      return Column(
-        children: [
-          steps,
-          const SizedBox(height: 24),
-          stats,
-        ],
-      );
+      return Column(children: [steps, const SizedBox(height: 24), stats]);
     }
 
     return Row(
@@ -547,11 +576,15 @@ class HomePage extends StatelessWidget {
   Widget _buildServices(BuildContext context) {
     final isArabic = context.isArabic;
     return Column(
-      crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: isArabic
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         Text(
           context.translate('comprehensiveMedicalServices'),
-          style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 26),
+          style: Theme.of(
+            context,
+          ).textTheme.displayLarge?.copyWith(fontSize: 26),
           textAlign: isArabic ? TextAlign.right : TextAlign.left,
         ),
         const SizedBox(height: 20),
@@ -559,11 +592,31 @@ class HomePage extends StatelessWidget {
           spacing: 12,
           runSpacing: 12,
           children: [
-            _serviceChip(context, context.translate('boneFractureService'), Icons.healing),
-            _serviceChip(context, context.translate('heartDiseaseService'), Icons.favorite_border),
-            _serviceChip(context, context.translate('brainTumorService'), Icons.psychology_outlined),
-            _serviceChip(context, context.translate('reportAnalysisService'), Icons.picture_as_pdf_outlined),
-            _serviceChip(context, context.translate('lungConditionService'), Icons.air),
+            _serviceChip(
+              context,
+              context.translate('boneFractureService'),
+              Icons.healing,
+            ),
+            _serviceChip(
+              context,
+              context.translate('heartDiseaseService'),
+              Icons.favorite_border,
+            ),
+            _serviceChip(
+              context,
+              context.translate('brainTumorService'),
+              Icons.psychology_outlined,
+            ),
+            _serviceChip(
+              context,
+              context.translate('reportAnalysisService'),
+              Icons.picture_as_pdf_outlined,
+            ),
+            _serviceChip(
+              context,
+              context.translate('lungConditionService'),
+              Icons.air,
+            ),
           ],
         ),
       ],
@@ -577,7 +630,9 @@ class HomePage extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF05281D) : AppColors.surfaceAlt,
         borderRadius: AppRadius.pill,
-        border: Border.all(color: isDark ? const Color(0xFF093D2C) : AppColors.border),
+        border: Border.all(
+          color: isDark ? const Color(0xFF093D2C) : AppColors.border,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -608,7 +663,9 @@ class HomePage extends StatelessWidget {
         borderRadius: AppRadius.card,
       ),
       child: Column(
-        crossAxisAlignment: isMobile ? CrossAxisAlignment.center : (isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start),
+        crossAxisAlignment: isMobile
+            ? CrossAxisAlignment.center
+            : (isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start),
         children: [
           Text(
             context.translate('readyToTakeControl'),
@@ -616,13 +673,19 @@ class HomePage extends StatelessWidget {
               color: Colors.white,
               fontSize: isMobile ? 22 : 28,
             ),
-            textAlign: isMobile ? TextAlign.center : (isArabic ? TextAlign.right : TextAlign.left),
+            textAlign: isMobile
+                ? TextAlign.center
+                : (isArabic ? TextAlign.right : TextAlign.left),
           ),
           const SizedBox(height: 10),
           Text(
             context.translate('startFreeAnalysis'),
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white70),
-            textAlign: isMobile ? TextAlign.center : (isArabic ? TextAlign.right : TextAlign.left),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: Colors.white70),
+            textAlign: isMobile
+                ? TextAlign.center
+                : (isArabic ? TextAlign.right : TextAlign.left),
           ),
           const SizedBox(height: 20),
           Wrap(
@@ -660,10 +723,14 @@ class HomePage extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF05281D) : AppColors.surfaceAlt,
         borderRadius: AppRadius.card,
-        border: Border.all(color: isDark ? const Color(0xFF093D2C) : AppColors.border),
+        border: Border.all(
+          color: isDark ? const Color(0xFF093D2C) : AppColors.border,
+        ),
       ),
       child: Column(
-        crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: isArabic
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
         children: [
           Text(
             context.translate('appTitle'),
@@ -682,9 +749,18 @@ class HomePage extends StatelessWidget {
             runSpacing: 8,
             children: [
               _footerLink(context.translate('home'), () => context.go('/home')),
-              _footerLink(context.translate('diagnosis'), () => context.go('/diagnosis')),
-              _footerLink(context.translate('doctors'), () => context.go('/doctors')),
-              _footerLink(context.translate('dashboard'), () => context.go('/dashboard')),
+              _footerLink(
+                context.translate('diagnosis'),
+                () => context.go('/diagnosis'),
+              ),
+              _footerLink(
+                context.translate('doctors'),
+                () => context.go('/doctors'),
+              ),
+              _footerLink(
+                context.translate('dashboard'),
+                () => context.go('/dashboard'),
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -721,9 +797,7 @@ class HomePage extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: filled
-          ? AppColors.primary
-          : Colors.transparent,
+      color: filled ? AppColors.primary : Colors.transparent,
       borderRadius: AppRadius.pill,
       child: InkWell(
         onTap: onTap,
@@ -734,7 +808,9 @@ class HomePage extends StatelessWidget {
               ? null
               : BoxDecoration(
                   borderRadius: AppRadius.pill,
-                  border: Border.all(color: dark ? Colors.white70 : AppColors.border),
+                  border: Border.all(
+                    color: dark ? Colors.white70 : AppColors.border,
+                  ),
                 ),
           child: Text(
             label,
@@ -748,6 +824,22 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class AnimatedLogo extends StatelessWidget {
+  final bool isArabic;
+  const AnimatedLogo({super.key, required this.isArabic});
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset(
+      isArabic
+          ? 'assets/images/care360_logo_ar.png'
+          : 'assets/images/care360_logo_en.png',
+      height: 40,
+      fit: BoxFit.contain,
     );
   }
 }

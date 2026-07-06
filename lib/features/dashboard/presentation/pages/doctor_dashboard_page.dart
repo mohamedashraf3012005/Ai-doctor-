@@ -30,11 +30,11 @@ class _DoctorDashboardPageState extends State<DoctorDashboardPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   static const List<_SidebarItem> _tabs = [
-    _SidebarItem(Icons.dashboard_rounded, 'nav_overview', 'Overview'),
-    _SidebarItem(Icons.calendar_month_rounded, 'nav_appointments', 'Appointments'),
-    _SidebarItem(Icons.people_rounded, 'nav_patients', 'Patients'),
-    _SidebarItem(Icons.science_rounded, 'nav_reports', 'Reports'),
-    _SidebarItem(Icons.schedule_rounded, 'nav_settings', 'Settings'),
+    _SidebarItem(Icons.dashboard_rounded, 'overview', 'Overview'),
+    _SidebarItem(Icons.calendar_month_rounded, 'appointments', 'Appointments'),
+    _SidebarItem(Icons.people_rounded, 'patients', 'Patients'),
+    _SidebarItem(Icons.science_rounded, 'reports', 'Reports'),
+    _SidebarItem(Icons.schedule_rounded, 'settings', 'Settings'),
     _SidebarItem(Icons.person_rounded, 'edit_profile_title', 'Profile'),
   ];
 
